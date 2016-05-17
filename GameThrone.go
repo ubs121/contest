@@ -1,3 +1,4 @@
+// https://www.hackerrank.com/challenges/game-of-thrones
 package main
 
 import "fmt"

@@ -2,40 +2,46 @@ package main
 
 import "fmt"
 
-func jump(river string, pos int, vel int) bool {
+const (
+	river string = "RWWRRRWWRWWRRRRRRRRRRRRRRWWW"
+	vel   int    = 2
+)
+
+var (
+	mem map[int]bool
+)
+
+func jump(pos int) bool {
+
 	if pos >= len(river) {
 		return true
 	}
 
-	if river[pos] == 'W' {
+	if pos >= 0 && river[pos] == 'W' {
 		return false
 	}
 
-	if jump(river, pos+vel, vel) {
-		return true
-	}
+	// loop over [vel-1, vel, vel+1]
+	for v := vel - 1; v <= vel+1; v++ {
+		if b, ok := mem[pos+v]; ok { // check from memory
+			return b
+		} else {
+			mem[pos+v] = jump(pos + v) // calculate
 
-	if jump(river, pos+vel+1, vel) {
-		return true
-	}
-
-	if jump(river, pos+vel-1, vel) {
-		return true
+			if mem[pos+v] {
+				return true
+			}
+		}
 	}
 
 	return false
 }
 
 func main() {
-	river := "RWWRW"
-	pos := -1
-	vel := 2
 
-	if jump(river, pos+vel, vel) {
-		fmt.Println("YES")
-	} else if jump(river, pos+vel+1, vel) {
-		fmt.Println("YES")
-	} else if jump(river, pos+vel-1, vel) {
+	mem = make(map[int]bool)
+
+	if jump(-1) { // starting position
 		fmt.Println("YES")
 	} else {
 		fmt.Println("NO")

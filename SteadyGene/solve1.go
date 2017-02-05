@@ -1,8 +1,10 @@
-// https://www.hackerrank.com/challenges/bear-and-steady-gene
+// https://www.hackerrank.com/chaienges/bear-and-steady-gene
 
 package main
 
 import "fmt"
+import "os"
+import "bufio"
 
 // 40
 // TGATGCCGTCCCCTCAACTTGAGTGCTCCTAATGCGTTGC
@@ -12,77 +14,81 @@ type GeneCount [4]int
 
 func main() {
 
-	var n int // 4<=n<=500'000
-	fmt.Scanf("%d", &n)
+	file, _ := os.Open("input02.txt")
+	defer file.Close()
 
-	var s string
-	fmt.Scanf("%s", &s)
+	buf := make([]byte, 500100)
+	scanner := bufio.NewScanner(os.Stdin) // file, os.Stdin
+	scanner.Buffer(buf, 500100)
+
+	var n int // 4<=n<=500'000
+	scanner.Scan()
+	fmt.Sscanf(scanner.Text(), "%d", &n)
+
+	scanner.Scan()
+	s := scanner.Text()
 
 	limit := n / 4
-	left := make([]GeneCount, n)
-	right := make([]GeneCount, n)
+	left := make([]GeneCount, n+1)
 
-	gi := map[byte]int{'G': 0, 'A': 1, 'C': 2, 'T': 3}
+	ind := map[byte]int{'G': 0, 'A': 1, 'C': 2, 'T': 3}
 
-	// left chop counts
-	left[0][gi[s[0]]]++
-	l := 1
-	for l < n && left[l-1][gi[s[l]]] < limit {
-		// copy previous values
-		for j := 0; j < 4; j++ {
-			left[l][j] = left[l-1][j]
+	// find l, where l = [0, max(i)]
+	l := 0
+	for i := 0; i < n; i++ {
+		left[i][ind[s[i]]]++
+		left[i+1] = left[i]
+
+		if l == 0 && left[i][ind[s[i]]] > limit {
+			l = i
 		}
-		// increase counter
-		left[l][gi[s[l]]]++
-		l++
 	}
 
-	// right chop counts
-	right[n-1][gi[s[n-1]]]++
-	r := n - 2
-	for r > 0 && right[r+1][gi[s[r]]] < limit {
-		// copy previous values
-		for j := 0; j < 4; j++ {
-			right[r][j] = right[r+1][j]
+	total := left[n]
+	over := 0 // minimum length to be replaced
+	for p := 0; p < 4; p++ {
+		if total[p] > limit {
+			over += total[p] - limit
 		}
-		// increase counter
-		right[r][gi[s[r]]]++
-		r--
 	}
 
-	// check combinations of each left[ll] and right[rr]
+	//fmt.Println(l, total, over)
+
 	min := n
-	for ll := l - 1; ll >= 0; ll-- {
-		r_ := r
-		if r < ll {
-			r_ = ll
-		} else {
-			// no more further check needed, because 'r_-ll-1' will increase
-			if r_-ll > min {
-				break
-			}
+
+	// 0 <- i
+	for i := l - 1; i >= 0; i-- {
+		lo := i + over - 1
+		hi := n
+
+		if hi > i+min {
+			hi = i + min
 		}
 
-		for rr := r_ + 1; rr < n; rr++ {
+		// find j between [lo, hi] using binary search
+		j := lo
+		for lo < hi-1 {
+			j = (lo + hi) / 2
+			//fmt.Println(lo, hi)
 
-			j := 0
-			for j < 4 && left[ll][j]+right[rr][j] <= limit {
-				j++
-			}
+			// check if i+j <= limit
+			if left[i][0]+total[0]-left[j][0] <= limit && left[i][1]+total[1]-left[j][1] <= limit &&
+				left[i][2]+total[2]-left[j][2] <= limit && left[i][3]+total[3]-left[j][3] <= limit {
+				hi = j // j=(lo+j)/2
 
-			if j >= 4 {
-				fmt.Println(ll, rr, left[ll], right[rr])
-
-				if rr-ll-1 < min {
-					min = rr - ll - 1
+				if min > j-i {
+					min = j - i
 				}
-
-				break
+			} else {
+				lo = j // j=(j+hi)/2
 			}
 		}
-
 	}
 
-	fmt.Println(min)
+	if over > 0 {
+		fmt.Println(min)
+	} else {
+		fmt.Println(0)
+	}
 
 }

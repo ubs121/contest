@@ -10,7 +10,7 @@ import "bufio"
 // TGATGCCGTCCCCTCAACTTGAGTGCTCCTAATGCGTTGC
 // 5
 
-type GeneCount [4]int
+type Quad [4]int
 
 func main() {
 
@@ -29,7 +29,7 @@ func main() {
 	s := scanner.Text()
 
 	limit := n / 4
-	left := make([]GeneCount, n+1)
+	left := make([]Quad, n+1)
 
 	ind := map[byte]int{'G': 0, 'A': 1, 'C': 2, 'T': 3}
 

@@ -1,13 +1,11 @@
 package main
 
 import "fmt"
-import "os"
-import "bufio"
 
 var pow2 map[int]int
 
 // calculate 2 powers
-func init_pow() {
+func initPow() {
 	pow2 = make(map[int]int)
 
 	p := 1
@@ -23,7 +21,7 @@ func xorCount(x int) int {
 	// number of binary digits
 	d := 0
 	for i > 0 {
-		d += 1
+		d++
 		i = i / 2
 	}
 
@@ -31,18 +29,12 @@ func xorCount(x int) int {
 }
 
 func main() {
-
-	file, _ := os.Open("input08.txt")
-	defer file.Close()
-
-	reader := bufio.NewReader(file) // file, os.Stdin
-
 	var q, x int
-	fmt.Fscanf(reader, "%d\n", &q)
+	fmt.Scanf("%d\n", &q)
 
-	init_pow()
+	initPow()
 	for i := 0; i < q; i++ {
-		fmt.Fscanf(reader, "%d\n", &x)
+		fmt.Scanf("%d\n", &x)
 		fmt.Println(xorCount(x))
 	}
 }

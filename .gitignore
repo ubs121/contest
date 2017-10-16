@@ -1,5 +1,5 @@
 # Ignore all
-
+.vscode/*
 
 # Unignore all with extensions
 !*.*

@@ -1,3 +1,6 @@
+/*
+	 NxN хөлөг дээр 2 тэргийг хамгийн их нийлбэртэй байхаар байрлуулах
+*/
 package main
 
 import (
@@ -9,11 +12,8 @@ import (
 )
 
 func main() {
-	file, _ := os.Open("tereg300.txt")
-	defer file.Close()
-
 	// эхний мөр == хөлгийн хэмжээ
-	scanner := bufio.NewScanner(file) // file, os.Stdin
+	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	n, _ := strconv.Atoi(scanner.Text())
 
@@ -37,14 +37,13 @@ func main() {
 		}
 	}
 
-	// TODO: insertion sort, мөр, багануудыг хамгийн ихээс нь бага руу нь эрэмбэлж нэг булан руу нь шахах байдлаар массивыг "дахин зохион" байгуулж болно. энэ нь үр дүнд нөлөөлөхгүй
+	// TODO: Greedy: мөр, багануудыг хамгийн ихээс нь бага руу нь эрэмбэлж нэг булан руу нь шахах байдлаар массивыг "дахин зохион" байгуулж болно. энэ нь үр дүнд нөлөөлөхгүй
 	// TODO: үүний дараа уг булангаас диагоналийн дагуу доош давтан шалгаж болно
 
 	max := 0
 	total := 0
 
 	for x1:=0; x1<n; x1++ {
-
 		for x2:=x1+1; x2<n; x2++ {
 
 			for y1:=0; y1<n; y1++ {
@@ -59,6 +58,7 @@ func main() {
 
 					//fmt.Printf("(%d,%d) (%d,%d) - %d\n", x1, y1, x2, y2, total)
 
+					// max утгатай байрлал олох (x1, y1), (x2, y2)
 					if total > max {
 						max = total
 					}
